@@ -33,6 +33,7 @@ app.listen(PORT, async () => {
 
 import User from "./db/models/user";
 // User.updateUserTable();
+// User.createTable();
 
 // routes
 import authRoutes from "./routes/authRoutes";

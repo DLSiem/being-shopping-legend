@@ -20,10 +20,16 @@ class User {
     CREATE TABLE IF NOT EXISTS users (
       user_id uuid DEFAULT gen_random_uuid(),
       username VARCHAR(255) NOT NULL,
+      first_name VARCHAR(255),
+      last_name VARCHAR(255),
       email VARCHAR(255) UNIQUE NOT NULL,
-      imageUrl VARCHAR(255) DEFAULT 'https://i.redd.it/0s865ngkc4t81.jpg',
-      password VARCHAR(255) NOT NULL,
-      role VARCHAR(10) DEFAULT 'user' CHECK (role IN ('user','admin')),
+      image_url VARCHAR(255) DEFAULT 'https://i.redd.it/0s865ngkc4t81.jpg',
+      password TEXT NOT NULL,
+      role VARCHAR(15) DEFAULT 'customer' CHECK (role IN ('customer','admin','seller')),
+      items_in_cart uuid[],
+      items_in_wishlist uuid[],
+      orders uuid[],
+      purchase_history uuid[],
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (user_id)
@@ -67,7 +73,7 @@ class User {
 
   // get user by id
   static getUserById = async (user_id: string): Promise<UserResponse> => {
-    const query = `SELECT user_id,username, email, imageUrl,created_at, updated_at FROM users WHERE user_id = $1 ;`;
+    const query = `SELECT user_id,username, email, image_url,created_at, updated_at FROM users WHERE user_id = $1 ;`;
     try {
       const res = await pool.query(query, [user_id]);
       return {

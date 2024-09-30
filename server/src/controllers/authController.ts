@@ -15,7 +15,7 @@ export const verifyToken = async (req: Request, res: Response) => {
       user_id: user.user_id,
       username: user.username,
       email: user.email,
-      imageUrl: user.imageurl,
+      imageUrl: user.image_url,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
@@ -36,7 +36,6 @@ export const verifyToken = async (req: Request, res: Response) => {
 
 export const signInUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  console.log(email, password);
 
   if (!email || !password) {
     return res.status(400).send("Please provide email and password");
@@ -62,7 +61,7 @@ export const signInUser = async (req: Request, res: Response) => {
       user_id: user.user_id,
       username: user.username,
       email: user.email,
-      imageUrl: user.imageurl,
+      imageUrl: user.image_url,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
@@ -102,7 +101,7 @@ export const signUpUser = async (req: Request, res: Response) => {
       user_id: user.user_id,
       username: user.username,
       email: user.email,
-      imageUrl: user.imageurl,
+      imageUrl: user.image_url,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };

@@ -27,20 +27,33 @@ interface Order {
   orderStatus: string;
 }
 
-// User for the user details.
-
-interface User {
+// user contacts and address
+interface UserContact {
   userId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
   phone: string;
   address: string;
   city: string;
   state: string;
   zip: string;
   country: string;
+}
+
+// User activity
+interface UserActivity {
+  user_activity_id: number;
+  userId: number;
+  activity: string;
+  activityTime: Date;
+}
+
+// User for the user details.
+interface User {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image_url: string;
+  password: string;
   role: UserRole;
   timeStamps: Date;
   itemsInCart: CartItem[];
