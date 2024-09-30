@@ -1,29 +1,33 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import User from "../db/models/user";
 import generateToken from "../utils/genetateToken";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const verifyToken = async (req: Request, res: Response) => {
-  let token;
-
   try {
-    token = req.cookies.token;
-    console.log("token", token);
+    const token = req.cookies.token;
     const decode: any = jwt.verify(token, process.env.JWT_SECRET as string);
-    console.log("decode", decode);
-    const user = await User.findByPk(decode.id);
-    if (user) {
-      const filerUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        imageUrl: user.imageUrl,
-        role: user.role,
-      };
-      res.status(200).json({ message: "Authorized", user: filerUser });
+    const { id } = decode;
+    const response = await User.getUserById(id);
+    const user = response.data[0];
+    const filterUser = {
+      user_id: user.user_id,
+      username: user.username,
+      email: user.email,
+      imageUrl: user.imageurl,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    };
+
+    if (response.rowCount > 0) {
+      return res.status(200).json({
+        message: "User verified",
+        data: filterUser,
+        rowCount: response.rowCount,
+      });
     } else {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ message: "Unauthorize" });
     }
   } catch (error) {
     return res.status(401).json({ message: "Not authorized, token failed" });
@@ -32,38 +36,48 @@ export const verifyToken = async (req: Request, res: Response) => {
 
 export const signInUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   if (!email || !password) {
     return res.status(400).send("Please provide email and password");
   }
   try {
-    const findUser = await User.findOne({ where: { email } });
+    const response = await User.getUserByEmail(email);
 
-    if (findUser) {
-      const isMatch = await bcrypt.compare(password, findUser.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
-      }
-
-      const token = generateToken(findUser.id);
-
-      res.cookie("token", token);
-      const filerUser = {
-        id: findUser.id,
-        email: findUser.email,
-        username: findUser.username,
-        imageUrl: findUser.imageUrl,
-        role: findUser.role,
-      };
-      return res
-        .status(200)
-        .json({ message: "User Login Successsfully", user: filerUser });
-    } else {
-      res.status(401).append("errorMassage", "Invalid credentials").send();
+    if (response.rowCount === 0) {
+      return res.status(404).json(response);
     }
+
+    const comparePassword = await bcrypt.compare(
+      password,
+      response.data[0].password
+    );
+
+    if (!comparePassword) {
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+    const token = generateToken(response.data[0].user_id);
+    const user = response.data[0];
+    const filterUser = {
+      user_id: user.user_id,
+      username: user.username,
+      email: user.email,
+      imageUrl: user.imageurl,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    };
+    const filterResponse = {
+      message: "User signed in successfully",
+      data: filterUser,
+      rowCount: response.rowCount,
+    };
+    res.cookie("token", token);
+    return res.status(200).json(filterResponse);
   } catch (error) {
     console.log(error);
-    res.status(500).json("Server Error");
+    res.status(500).json({
+      message: "Server Error",
+    });
   }
 };
 export const signUpUser = async (req: Request, res: Response) => {
@@ -72,23 +86,37 @@ export const signUpUser = async (req: Request, res: Response) => {
     return res.status(400).send("Please provide email, username and password");
   }
   try {
-    const findOne = await User.findOne({ where: { email } });
-    if (findOne) {
+    const response = await User.getUserByEmail(email);
+    if (response.rowCount > 0) {
       return res.status(400).json({ message: "User already exists" });
     }
-    const user = await User.create({ email, password });
-    const token = generateToken(user.dataValues.id);
-    res.cookie("token", token);
-    const filerUser = {
-      id: user.id,
-      email: user.email,
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const username = email.split("@")[0];
+    const createUserRes = await User.createUser(
+      email,
+      username,
+      hashedPassword
+    );
+    const user = createUserRes.data[0];
+    const filterUser = {
+      user_id: user.user_id,
       username: user.username,
-      imageUrl: user.imageUrl,
-      role: user.role,
+      email: user.email,
+      imageUrl: user.imageurl,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
     };
-    return res
-      .status(201)
-      .json({ message: "User created successfully", user: filerUser });
+    if (createUserRes.rowCount === 0) {
+      return res.status(400).json({ message: "User not created" });
+    }
+    const data = {
+      message: "User created successfully",
+      data: filterUser,
+      rowCount: createUserRes.rowCount,
+    };
+    const token = generateToken(createUserRes.data[0].user_id);
+    res.cookie("token", token);
+    return res.status(201).json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
@@ -96,21 +124,6 @@ export const signUpUser = async (req: Request, res: Response) => {
 };
 
 export const signOutUser = async (req: Request, res: Response) => {
+  console.log("signout");
   res.clearCookie("token").status(200).json({ message: "User logged out" });
-};
-
-import { CustomRequest } from "../middlewares/authMiddleware";
-
-export const getUserProfile = async (req: CustomRequest, res: Response) => {
-  try {
-    const user = await User.findByPk(req.user?.id);
-    if (user) {
-      return res.status(200).json(user);
-    } else {
-      return res.status(404).send("User not found");
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Server Error");
-  }
 };

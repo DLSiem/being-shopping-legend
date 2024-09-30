@@ -1,8 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { sequelize } from "./db/models";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import pool from "./config/config";
 
 dotenv.config();
 
@@ -17,21 +18,21 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true,
+    credentials: true, // enable set cookie
   })
 );
 
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Database connected!");
-    app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+app.listen(PORT, async () => {
+  try {
+    await pool.connect();
+    console.log(`Server is running on http://localhost:${PORT}`);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+import User from "./db/models/user";
+// User.updateUserTable();
 
 // routes
 import authRoutes from "./routes/authRoutes";
