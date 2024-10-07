@@ -19,6 +19,21 @@ class ItemCategory {
       console.error(error);
     }
   };
+
+  // alter item table
+  // category name unique
+  static alterTable = async () => {
+    const query = `ALTER TABLE item_categories
+        ADD CONSTRAINT unique_category_name UNIQUE (category_name);`;
+    try {
+      console.log("altering item category table");
+      await pool.query(query);
+      console.log("item category table altered");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // get all categories
   static getAllCategories = async (): Promise<ItemResponse> => {
     const query = `SELECT * FROM item_categories`;

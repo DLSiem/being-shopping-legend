@@ -49,6 +49,7 @@ import ProductTags from "./db/models/product-tags";
 // User.updateUserTable();
 // User.createTable();
 // ProductTags.alterTable();
+// ItemCategory.alterTable();
 
 // routes
 

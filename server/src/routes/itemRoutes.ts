@@ -16,10 +16,10 @@ import {
 router.get("/", getItems);
 
 // categories
-router.post("/category/create", createCategory);
+router.post("/categories/create", createCategory);
 router.get("/categories", getCategories);
-router.get("/category/:categoryId", getCategoryById);
-router.delete("/category/delete/:categoryId", deleteCategory);
+router.get("/categories/:categoryId", getCategoryById);
+router.delete("/categories/delete/:categoryId", deleteCategory);
 
 // tags
 router.post("/tags/create", createTags);
