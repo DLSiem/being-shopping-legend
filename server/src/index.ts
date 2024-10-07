@@ -54,8 +54,10 @@ import ProductTags from "./db/models/product-tags";
 
 import authRoutes from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
+import itemRouter from "./routes/itemRoutes";
 app.use("/auth", authRoutes);
 app.use("/users", userRouter);
+app.use("/items", itemRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

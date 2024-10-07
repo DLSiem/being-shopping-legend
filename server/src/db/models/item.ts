@@ -1,5 +1,11 @@
 import pool from "../../config/config";
 
+export interface ItemResponse {
+  rowCount: number;
+  message: string;
+  data: any;
+}
+
 class Item {
   // create item table
   static createTable = async () => {
@@ -26,6 +32,54 @@ class Item {
       console.log("item table created");
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // create item
+  static create = async (
+    product_name: string,
+    user_id: string,
+    name: string,
+    description: string,
+    price: number,
+    image_url: string[],
+    category: string
+  ) => {
+    const query = `INSERT INTO items (product_name, user_id, name, description, price, image_url, category) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+    try {
+      const result = await pool.query(query, [
+        product_name,
+        user_id,
+        name,
+        description,
+        price,
+        image_url,
+        category,
+      ]);
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // get all items
+  static getAllItems = async (): Promise<ItemResponse> => {
+    const query = `SELECT * FROM items`;
+    try {
+      const result = await pool.query(query);
+      console.log(result);
+      return {
+        rowCount: result.rowCount || 0,
+        message: result.rowCount === 0 ? "No items found" : "Items found",
+        data: result.rows,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        rowCount: 0,
+        message: "Server Error",
+        data: null,
+      };
     }
   };
 }
