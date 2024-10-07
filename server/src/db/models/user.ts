@@ -117,7 +117,7 @@ class User {
 
   // get all users from the database
   static getAllUsers = async (): Promise<UserResponse> => {
-    const query = `SELECT user_id,username,email,imageUrl,role FROM users;`;
+    const query = `SELECT user_id,username,email,image_url,role FROM users;`;
     try {
       const res = await pool.query(query);
       return {
@@ -137,9 +137,11 @@ class User {
 
   // delete user by id
   static deleteUserById = async (user_id: string): Promise<UserResponse> => {
-    const query = `DELETE FROM users WHERE user_id = $1 RETURNING username, email, imageUrl, role;`;
+    const query = `DELETE FROM users WHERE user_id = $1 RETURNING username, email, image_url, role;`;
+
     try {
       const res = await pool.query(query, [user_id]);
+
       return {
         rowCount: res.rowCount || 0,
         message:
@@ -147,6 +149,7 @@ class User {
         data: res.rows,
       };
     } catch (error) {
+      console.log(error);
       return {
         rowCount: 0,
         message:
@@ -179,14 +182,12 @@ class User {
       fields.push("role = $" + (fields.length + 1));
       values.push(role);
     }
-    console.log(fields);
-    console.log(values);
     query +=
       fields.join(", ") +
       ", updated_at = CURRENT_TIMESTAMP" +
       " WHERE user_id = $" +
       (fields.length + 1) +
-      " RETURNING user_id, username, email, imageUrl, role;";
+      " RETURNING user_id, username, email, image_url, role;";
     try {
       const res = await pool.query(query, [...values, user_id]);
       return {

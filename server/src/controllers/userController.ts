@@ -20,8 +20,12 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.getAllUsers();
-    return res.status(200).json(users);
+    const response = await User.getAllUsers();
+    if (response.rowCount === 0) {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");
@@ -33,6 +37,7 @@ export const deleteUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   try {
     const response = await User.deleteUserById(userId);
+    console.log(response);
     if (response.rowCount === 0) {
       return res.status(404).json(response);
     }
@@ -79,7 +84,13 @@ export const createUser = async (req: Request, res: Response) => {
     if (response.rowCount === 0) {
       return res.status(400).json(response);
     }
-    return res.status(201).json(response);
+    const data = response.data[0];
+    const { password: userPassword, ...rest } = data;
+    return res.status(201).json({
+      rowCount: response.rowCount,
+      message: "User created successfully",
+      data: rest,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");
