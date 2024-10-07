@@ -4,18 +4,21 @@ class Item {
   // create item table
   static createTable = async () => {
     const query = `CREATE TABLE IF NOT EXISTS items (
-            item_id uuid PRIMARY KEY gen_random_uuid() ,
+            item_id uuid DEFAULT gen_random_uuid(),
+            product_name VARCHAR(255),
             user_id uuid,
             name VARCHAR(255),
             description TEXT,
             price FLOAT,
-            image_url VARCHAR(255),
+            image_url VARCHAR(500)[],
+            category uuid,
+            PRIMARY KEY (item_id),
+            FOREIGN KEY (user_id)
+            REFERENCES users(user_id)
+            ON DELETE SET NULL,
+            FOREIGN KEY (category) REFERENCES item_categories(category_id) ON DELETE SET NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            CONSTRAINT fk_user
-            FOREIGN KEY (user_id) 
-            REFERENCES users(user_id) 
-            ON DELETE SET NULL
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );`;
     try {
       console.log("creating item table");
@@ -26,3 +29,5 @@ class Item {
     }
   };
 }
+
+export default Item;

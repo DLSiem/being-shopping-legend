@@ -1,10 +1,10 @@
 import pool from "../../config/config";
 
-class contacts {
+class Contacts {
   // create contact table is not exist
   static createTable = async () => {
     const query = `CREATE TABLE IF NOT EXISTS contacts (
-            contact_id uuid PRIMARY KEY gen_random_uuid() ,
+            contact_id uuid DEFAULT gen_random_uuid() ,
             user_id uuid,
             phone VARCHAR(15),
             address VARCHAR(255),
@@ -27,3 +27,5 @@ class contacts {
     }
   };
 }
+
+export default Contacts;

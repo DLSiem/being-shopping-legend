@@ -32,10 +32,26 @@ app.listen(PORT, async () => {
 });
 
 import User from "./db/models/user";
+import ItemCategory from "./db/models/category";
+import Contacts from "./db/models/contacts";
+import Item from "./db/models/item";
+import OrderDetails from "./db/models/order";
+import Tags from "./db/models/tags";
+import ProductTags from "./db/models/product-tags";
+
+// ItemCategory.createTable();
+// Contacts.createTable();
+// Item.createTable();
+// OrderDetails.createTable();
+// Tags.createTable();
+// ProductTags.createTable();
+
 // User.updateUserTable();
 // User.createTable();
+// ProductTags.alterTable();
 
 // routes
+
 import authRoutes from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 app.use("/auth", authRoutes);
