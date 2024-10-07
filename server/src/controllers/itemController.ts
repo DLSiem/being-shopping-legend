@@ -3,27 +3,21 @@ import User from "../db/models/user";
 import Item from "../db/models/item";
 import ItemCategory from "../db/models/category";
 import Tags from "../db/models/tags";
-import exp from "constants";
 
 // create item
-// export const createItem = async (req: Request, res: Response) => {
-//   const { itemName, description, price, imageUrl, category } = req.body;
-//   const userId = req.user.user_id;
-//   try {
-//     const response = await Item.createItem(
-//       itemName,
-//       description,
-//       price,
-//       imageUrl,
-//       category,
-//       userId
-//     );
-//     return res.status(201).json(response);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("Server Error");
-//   }
-// };
+export const createItem = async (req: Request, res: Response) => {
+  try {
+    const response = await Item.create(req.body);
+    if (response.rowCount === 0) {
+      return res.status(400).json(response);
+    }
+    return res.status(201).json(response);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+  //   res.status(200).json({ message: "Item not yet" });
+};
 
 // create category
 export const createCategory = async (req: Request, res: Response) => {

@@ -11,9 +11,11 @@ import {
   getCategoryById,
   deleteCategory,
   getTagsById,
+  createItem,
 } from "../controllers/itemController";
 
 router.get("/", getItems);
+router.post("/create", createItem);
 
 // categories
 router.post("/categories/create", createCategory);

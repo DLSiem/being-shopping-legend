@@ -50,6 +50,7 @@ import ProductTags from "./db/models/product-tags";
 // User.createTable();
 // ProductTags.alterTable();
 // ItemCategory.alterTable();
+// Item.alterTable();
 
 // routes
 
