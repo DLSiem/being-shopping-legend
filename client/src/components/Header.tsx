@@ -28,16 +28,28 @@ const Header = () => {
         </Link>
         <ul className="flex space-x-4">
           {isAuthenticated && (
-            <li>
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive ? "underline" : "hover:underline"
-                }
-              >
-                Dashboard
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    isActive ? "underline" : "hover:underline"
+                  }
+                >
+                  Dashboard
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/items/create"
+                  className={({ isActive }) =>
+                    isActive ? "underline" : "hover:underline"
+                  }
+                >
+                  Create Item
+                </NavLink>
+              </li>
+            </>
           )}
           <li>
             <NavLink
@@ -49,6 +61,7 @@ const Header = () => {
               About
             </NavLink>
           </li>
+
           {!isAuthenticated && (
             <>
               <li>

@@ -6,7 +6,7 @@ import { RootLayout, NotFoundPage } from "./components";
 import { Signin, Signup, ProtectedRoutes } from "./features/auth";
 import { Dashboard } from "./features/users";
 
-import { Home, ItemDetails } from "./features/items";
+import { Home, ItemDetails, CreateItem } from "./features/items";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +21,14 @@ const router = createBrowserRouter([
       {
         path: "items/:itemId",
         element: <ItemDetails />,
+      },
+      {
+        path: "items/create",
+        element: (
+          <ProtectedRoutes>
+            <CreateItem />,
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "counter",

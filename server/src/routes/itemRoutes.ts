@@ -18,7 +18,7 @@ import {
 // items
 router.get("/", getItems);
 router.post("/create", createItem);
-router.get("/:itemId", getItemById);
+router.get("/:itemId/get", getItemById);
 
 // categories
 router.post("/categories/create", createCategory);

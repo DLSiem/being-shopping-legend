@@ -116,6 +116,7 @@ class Item {
     i.image_url,
     i.description,
     i.category,
+    i.user_id,
     i.created_at,
     i.updated_at,
     c.category_name

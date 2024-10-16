@@ -36,7 +36,8 @@ class ItemCategory {
 
   // get all categories
   static getAllCategories = async (): Promise<ItemResponse> => {
-    const query = `SELECT * FROM item_categories`;
+    const query = `SELECT category_id, category_name FROM item_categories`;
+
     try {
       const result = await pool.query(query);
       return {

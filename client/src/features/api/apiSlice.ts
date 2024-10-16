@@ -24,6 +24,17 @@ export interface ItemDetails {
   category_name: string;
   created_at: string;
   updated_at: string;
+  user_id: string;
+}
+
+export interface Tag {
+  tag_id: number;
+  tag_name: string;
+}
+
+export interface Category {
+  category_id: number;
+  category_name: string;
 }
 
 export const apiSlice = createApi({
@@ -36,7 +47,18 @@ export const apiSlice = createApi({
     getItem: builder.query<ApiResponseType, string>({
       query: (itemId) => `items/${itemId}`,
     }),
+    getAllCategeories: builder.query<ApiResponseType, void>({
+      query: () => "items/categories",
+    }),
+    getAllTags: builder.query<ApiResponseType, void>({
+      query: () => "items/tags",
+    }),
   }),
 });
 
-export const { useGetAllItemsQuery, useGetItemQuery } = apiSlice;
+export const {
+  useGetAllItemsQuery,
+  useGetItemQuery,
+  useGetAllCategeoriesQuery,
+  useGetAllTagsQuery,
+} = apiSlice;
