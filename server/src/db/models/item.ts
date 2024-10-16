@@ -106,6 +106,40 @@ class Item {
       };
     }
   };
+
+  // get item by id
+  static getItemById = async (item_id: string): Promise<ItemResponse> => {
+    const query = `SELECT 
+    i.item_id,
+    i.product_name,
+    i.price,
+    i.image_url,
+    i.description,
+    i.category,
+    i.created_at,
+    i.updated_at,
+    c.category_name
+    FROM items i
+    LEFT JOIN item_categories c ON i.category = c.category_id
+    WHERE i.item_id = $1
+    ;
+    `;
+    try {
+      const result = await pool.query(query, [item_id]);
+      return {
+        rowCount: result.rowCount || 0,
+        message: result.rowCount === 0 ? "Item not found" : "Item found",
+        data: result.rows,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        rowCount: 0,
+        message: "Server Error",
+        data: null,
+      };
+    }
+  };
 }
 
 export default Item;

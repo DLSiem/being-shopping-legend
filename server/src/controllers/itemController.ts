@@ -18,6 +18,34 @@ export const createItem = async (req: Request, res: Response) => {
   }
   //   res.status(200).json({ message: "Item not yet" });
 };
+// get all items
+export const getItems = async (req: Request, res: Response) => {
+  try {
+    const response = await Item.getAllItems();
+    if (response.rowCount === 0) {
+      return res.status(404).json(response);
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+// get item by id
+export const getItemById = async (req: Request, res: Response) => {
+  const { itemId } = req.params;
+  try {
+    const response = await Item.getItemById(itemId);
+    if (response.rowCount === 0) {
+      return res.status(404).json(response);
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server Error");
+  }
+};
 
 // create category
 export const createCategory = async (req: Request, res: Response) => {
@@ -131,20 +159,6 @@ export const deleteTags = async (req: Request, res: Response) => {
   const { tagId } = req.params;
   try {
     const response = await Tags.deleteTag(tagId);
-    if (response.rowCount === 0) {
-      return res.status(404).json(response);
-    }
-    return res.status(200).json(response);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Server Error");
-  }
-};
-
-// get all items
-export const getItems = async (req: Request, res: Response) => {
-  try {
-    const response = await Item.getAllItems();
     if (response.rowCount === 0) {
       return res.status(404).json(response);
     }
