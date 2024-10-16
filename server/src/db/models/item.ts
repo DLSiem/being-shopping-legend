@@ -89,7 +89,7 @@ class Item {
 
   // get all items
   static getAllItems = async (): Promise<ItemResponse> => {
-    const query = `SELECT * FROM items`;
+    const query = `SELECT item_id, product_name,price, image_url[1] FROM items`;
     try {
       const result = await pool.query(query);
       return {
