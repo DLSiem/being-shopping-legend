@@ -92,7 +92,6 @@ class Item {
     const query = `SELECT * FROM items`;
     try {
       const result = await pool.query(query);
-      console.log(result);
       return {
         rowCount: result.rowCount || 0,
         message: result.rowCount === 0 ? "No items found" : "Items found",

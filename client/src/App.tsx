@@ -6,6 +6,8 @@ import { RootLayout, NotFoundPage } from "./components";
 import { Signin, Signup, ProtectedRoutes } from "./features/auth";
 import { Dashboard } from "./features/users";
 
+import { Home } from "./features/items";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,6 +16,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Home />,
+      },
+      {
+        path: "counter",
         element: <Counter />,
       },
       {
